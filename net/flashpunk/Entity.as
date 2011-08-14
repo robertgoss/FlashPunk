@@ -43,6 +43,11 @@ package net.flashpunk
 		 * Height of the Entity's hitbox.
 		 */
 		public var height:int;
+
+        /**
+         * If the Entity's hitbox is circular
+         */
+        public var circular:Boolean = false;
 		
 		/**
 		 * X origin of the Entity's hitbox.
@@ -142,10 +147,7 @@ package net.flashpunk
 				while (e)
 				{
 					if (e.collidable && e !== this
-					&& x - originX + width > e.x - e.originX
-					&& y - originY + height > e.y - e.originY
-					&& x - originX < e.x - e.originX + e.width
-					&& y - originY < e.y - e.originY + e.height)
+					&& collideHitboxes(e, x, y))
 					{
 						if (!e._mask || e._mask.collide(HITBOX))
 						{
@@ -162,10 +164,7 @@ package net.flashpunk
 			while (e)
 			{
 				if (e.collidable && e !== this
-				&& x - originX + width > e.x - e.originX
-				&& y - originY + height > e.y - e.originY
-				&& x - originX < e.x - e.originX + e.width
-				&& y - originY < e.y - e.originY + e.height)
+				&& collideHitboxes(e, x, y))
 				{
 					if (_mask.collide(e._mask ? e._mask : e.HITBOX))
 					{
@@ -203,6 +202,41 @@ package net.flashpunk
 			
 			return null;
 		}
+
+        /**
+		 * Checks if this Entity's hitbox collides with a specific Entity's hitbox.
+		 * @param	e		The Entity to collide against.
+		 * @param	x		Virtual x position to place this Entity.
+		 * @param	y		Virtual y position to place this Entity.
+		 * @return	The Entity if they overlap, or null if they don't.
+		 */
+        private function collideHitboxes(e:Entity, x:Number, y:Number):Entity
+        {
+            _x = this.x; _y = this.y;
+            this.x = x; this.y = y;
+
+            if (!e.collidable) return null;
+
+            if (circular || e.circular)
+            {
+                if (distanceFrom(e,true)==0) 
+                {
+                    this.x = _x; this.y = _y;
+                    return e;
+                }
+                return null;
+            }
+
+	        if (x - originX + width > e.x - e.originX
+			&& y - originY + height > e.y - e.originY
+			&& x - originX < e.x - e.originX + e.width
+			&& y - originY < e.y - e.originY + e.height)
+            {
+                this.x = _x; this.y = _y;
+                return e;
+            }
+            return null;
+        }
 		
 		/**
 		 * Checks if this Entity collides with a specific Entity.
@@ -216,11 +250,7 @@ package net.flashpunk
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
 			
-			if (e.collidable
-			&& x - originX + width > e.x - e.originX
-			&& y - originY + height > e.y - e.originY
-			&& x - originX < e.x - e.originX + e.width
-			&& y - originY < e.y - e.originY + e.height)
+			if (e.collidable && collideHitboxes(e, x, y))
 			{
 				if (!_mask)
 				{
@@ -254,25 +284,31 @@ package net.flashpunk
 		 */
 		public function collideRect(x:Number, y:Number, rX:Number, rY:Number, rWidth:Number, rHeight:Number):Boolean
 		{
-			if (x - originX + width >= rX && y - originY + height >= rY
-			&& x - originX <= rX + rWidth && y - originY <= rY + rHeight)
-			{
-				if (!_mask) return true;
-				_x = this.x; _y = this.y;
-				this.x = x; this.y = y;
-				FP.entity.x = rX;
-				FP.entity.y = rY;
-				FP.entity.width = rWidth;
-				FP.entity.height = rHeight;
-				if (_mask.collide(FP.entity.HITBOX))
-				{
-					this.x = _x; this.y = _y;
-					return true;
-				}
-				this.x = _x; this.y = _y;
-				return false;
-			}
-			return false;
+			if (x - originX + width < rX || y - originY + height < rY
+			|| x - originX > rX + rWidth || y - originY > rY + rHeight) return false
+
+            _x = this.x; _y = this.y;
+            this.x = x; this.y = y;
+
+            if (!circular || distanceToRect(rX,rY,rWidth,rHeight)==0)
+            {
+		        if (!_mask) 
+                {
+                    this.x = _x; this.y = _y;
+                    return true;
+                }
+			    FP.entity.x = rX;
+			    FP.entity.y = rY;
+			    FP.entity.width = rWidth;
+			    FP.entity.height = rHeight;
+			    if (_mask.collide(FP.entity.HITBOX))
+			    {
+			    	this.x = _x; this.y = _y;
+				    return true;
+			    }
+            }
+            this.x = _x; this.y = _y;
+            return false;
 		}
 		
 		/**
@@ -285,6 +321,7 @@ package net.flashpunk
 		 */
 		public function collidePoint(x:Number, y:Number, pX:Number, pY:Number):Boolean
 		{
+            if (circular && FP.distance(centerX, centerY, pX, pY) > halfWidth) return false;
 			if (pX >= x - originX && pY >= y - originY
 			&& pX < x - originX + width && pY < y - originY + height)
 			{
@@ -330,10 +367,7 @@ package net.flashpunk
 				while (e)
 				{
 					if (e.collidable && e !== this
-					&& x - originX + width > e.x - e.originX
-					&& y - originY + height > e.y - e.originY
-					&& x - originX < e.x - e.originX + e.width
-					&& y - originY < e.y - e.originY + e.height)
+					&& collideHitboxes(e, x, y))
 					{
 						if (!e._mask || e._mask.collide(HITBOX)) array[n ++] = e;
 					}
@@ -346,10 +380,7 @@ package net.flashpunk
 			while (e)
 			{
 				if (e.collidable && e !== this
-				&& x - originX + width > e.x - e.originX
-				&& y - originY + height > e.y - e.originY
-				&& x - originX < e.x - e.originX + e.width
-				&& y - originY < e.y - e.originY + e.height)
+				&& collideHitboxes(e, x, y))
 				{
 					if (_mask.collide(e._mask ? e._mask : e.HITBOX)) array[n ++] = e;
 				}
@@ -510,13 +541,15 @@ package net.flashpunk
 		 * @param	height		Height of the hitbox.
 		 * @param	originX		X origin of the hitbox.
 		 * @param	originY		Y origin of the hitbox.
+         * @param   circular    If the hitbox is circular.
 		 */
-		public function setHitbox(width:int = 0, height:int = 0, originX:int = 0, originY:int = 0):void
+		public function setHitbox(width:int = 0, height:int = 0, originX:int = 0, originY:int = 0,circular:Boolean = false):void
 		{
 			this.width = width;
 			this.height = height;
 			this.originX = originX;
 			this.originY = originY;
+            this.circular = circular;
 		}
 		
 		/**
@@ -525,7 +558,7 @@ package net.flashpunk
 		 */
 		public function setHitboxTo(o:Object):void
 		{
-			if (o is Image || o is Rectangle) setHitbox(o.width, o.height, -o.x, -o.y);
+			if (o is Image || o is Rectangle) setHitbox(o.width, o.height, -o.x, -o.y,false);
 			else
 			{
 				if (o.hasOwnProperty("width")) width = o.width;
@@ -534,6 +567,7 @@ package net.flashpunk
 				else if (o.hasOwnProperty("x")) originX = -o.x;
 				if (o.hasOwnProperty("originY") && !(o is Graphic)) originX = o.originY;
 				else if (o.hasOwnProperty("y")) originX = -o.y;
+                if (o.hasOwnProperty("circular")) circular = o.circular;
 			}
 		}
 		
@@ -566,6 +600,18 @@ package net.flashpunk
 		public function distanceFrom(e:Entity, useHitboxes:Boolean = false):Number
 		{
 			if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
+            if(circular)
+            {
+                var dist:Number;
+                if(e.circular)
+                {
+                    dist = FP.distance(centerX, centerY, e.centerX, e.centerY) - halfWidth - e.halfWidth;
+                    return Math.max(0,dist);
+                }
+                dist = FP.distanceRectPoint(centerX, centerY, e.x - e.originX, e.y - e.originY, e.width, e.height) - halfWidth;
+                return Math.max(0,dist);
+            }
+            if(e.circular) return e.distanceFrom(this,true);
 			return FP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		}
 		
@@ -579,6 +625,11 @@ package net.flashpunk
 		public function distanceToPoint(px:Number, py:Number, useHitbox:Boolean = false):Number
 		{
 			if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
+            if (circular)
+            {
+                var dist:Number = FP.distance(px, py, centerX, centerY) - halfWidth;
+                return Math.max(0,dist);
+            }
 			return FP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
 		}
 		
@@ -592,6 +643,11 @@ package net.flashpunk
 		 */
 		public function distanceToRect(rx:Number, ry:Number, rwidth:Number, rheight:Number):Number
 		{
+            if (circular)
+            {
+                var dist:Number = FP.distanceRectPoint(centerX, centerY, rx, ry, rwidth, rheight) -halfWidth;
+                return Math.max(0,dist)
+            }
 			return FP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
 		}
 		
@@ -744,7 +800,7 @@ package net.flashpunk
 		public function get name():String { return _name; }
 		public function set name(value:String):void
 		{
-			if (_name == value) return;
+            if (_name == value) return;
 			if (_name && _world) _world.unregisterName(this);
 			_name = value;
 			if (_name && _world) _world.registerName(this);

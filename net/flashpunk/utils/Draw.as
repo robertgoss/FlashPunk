@@ -306,6 +306,7 @@
 			if (outline)
 			{
 				if (color < 0xFF000000) color = 0xFF000000 | color;
+                if (e.circular) return circle(e.centerX, e.centerY, e.halfWidth, color);
 				var x:int = e.x - e.originX - _camera.x,
 					y:int = e.y - e.originY - _camera.y;
 				_rect.x = x;
