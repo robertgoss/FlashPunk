@@ -48,53 +48,6 @@
             return distSq < (radius + other.radius) * (radius + other.radius);
         }
 		
-		/**
-		 * X offset.
-		 */
-		public function get x():int { return _x; }
-		public function set x(value:int):void
-		{
-			if (_x == value) return;
-			_x = value;
-			if (parent) update();
-		}
-		
-		/**
-		 * Y offset.
-		 */
-		public function get y():int { return _y; }
-		public function set y(value:int):void
-		{
-			if (_y == value) return;
-			_y = value;
-			if (parent) update();
-		}
-		
-		/**
-		 * Radius.
-		 */
-		public function get radius():int { return _radius; }
-		public function set radius(value:int):void
-		{
-			if (_radius == value) return;
-			_radius = value;
-            if (parent) update();
-		}
-		
-		
-		/** @private Updates the parent's bounds for this mask. */
-		override protected function update():void 
-		{
-            if (parent)
-			{
-				// update entity bounds
-				parent.originX = -_x + _radius;
-				parent.originY = -_y + _radius;
-				parent.width = 2 * _radius;
-				parent.height = 2 * _radius;
-			}
-		}
-		
 		// Hitbox information.
 		/** @private */ internal var _radius:uint;
 		/** @private */ internal var _x:int;
