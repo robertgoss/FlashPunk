@@ -45,6 +45,7 @@
 			_check[Hitbox] = collideHitbox;
 			_check[Pixelmask] = collidePixelmask;
 			_check[Grid] = collideGrid;
+			_check[Circle] = collideCircle;
 		}
 		
 		/**
@@ -221,6 +222,41 @@
 			_rect.width = _point.x - _rect.x;
 			_rect.height = _point.y - _rect.y;
 			return _data.hitTest(FP.zero, 1, _rect);
+		}
+
+		/** @private Collides against a Circle. */
+		private function collideCircle(other:Circle):Boolean
+		{
+			var x1:int = other.parent.x + other._x - parent.x - _x - other._radius,
+				y1:int = other.parent.y + other._y - parent.y - _y - other._radius,
+				x2:int = ((x1 + 2 * other._radius - 1) / _tile.width),
+				y2:int = ((y1 + 2 * other._radius - 1) / _tile.height);
+			_point.x = x1;
+			_point.y = y1;
+			x1 /= _tile.width;
+			y1 /= _tile.height;
+			_tile.x = x1 * _tile.width;
+			_tile.y = y1 * _tile.height;
+			var xx:int = x1;
+			while (y1 <= y2)
+			{
+				while (x1 <= x2)
+				{
+					if (_data.getPixel32(x1, y1))
+					{
+						if (FP.distanceRectPoint(other.parent.x + other._x - parent.x - _x, 
+							other.parent.y + other._y - parent.y - _y,
+							_tile.x,_tile.y, _tile.width, _tile.height) <= other._radius) return true;
+					}
+					x1 ++;
+					_tile.x += _tile.width;
+				}
+				x1 = xx;
+				y1 ++;
+				_tile.x = x1 * _tile.width;
+				_tile.y += _tile.height;
+			}
+			return false;
 		}
 		
 		/** @private Collides against a Pixelmask. */
