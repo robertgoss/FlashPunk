@@ -518,6 +518,22 @@ package net.flashpunk
 			this.originX = originX;
 			this.originY = originY;
 		}
+
+        /**
+		 * Sets the Entity's to a circular hitbox
+		 * @param	radius		Radius of the circle.
+		 * @param	originX		X origin of the circle center.
+		 * @param	originY		Y origin of the circle center.
+		 */
+		public function setCircularHitbox(radius:int = 1, originX:int = 0, originY:int = 0):void
+		{
+			this.width = 2*radius;
+			this.height = 2*radius
+			this.originX = originX;
+			this.originY = originY;
+            this.mask = new Circle(radius,this.originX+radius,this.originY+radius);
+		}
+
 		
 		/**
 		 * Sets the Entity's hitbox to match that of the provided object.
