@@ -37,6 +37,7 @@
 			_check[Mask] = collideMask;
 			_check[Pixelmask] = collidePixelmask;
 			_check[Hitbox] = collideHitbox;
+			_check[Circle] = collideCircle;
 		}
 		
 		/** @private Collide against an Entity. */
@@ -61,6 +62,23 @@
 			_rect.width = other._width;
 			_rect.height = other._height;
 			return _data.hitTest(_point, threshold, _rect);
+		}
+		
+		/** @private Collide against a Circle */
+		private function collideCircle(other:Circle):Boolean
+		{
+			_point.x = parent.x + _x;
+			_point.y = parent.y + _y;
+			_point2.x = other.parent.x + other._x - other.radius;
+			_point2.y = other.parent.y + other._y - other.radius;
+			var circleBmd:BitmapData = new BitmapData(2 * other.radius, 2 * other.radius, true, 0x00000000);
+			var circle:Sprite = new Sprite();
+			circle.graphics.lineStyle();
+			circle.graphics.beginFill(0x000000,1);
+			circle.graphics.drawCircle(other.radius, other.radius, other.radius);
+			circle.graphics.endFill();
+			circleBmd.draw(circle);
+			return _data.hitTest(_point, threshold, circleBmd, _point2, 1);
 		}
 		
 		/** @private Collide against a Pixelmask. */
