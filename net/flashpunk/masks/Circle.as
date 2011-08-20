@@ -27,24 +27,24 @@
 		/** @private Collides against an Entity. */
 		private function collideMask(other:Mask):Boolean
 		{
-            return radius < FP.distanceRectPoint(parent.x + _x,parent.y + _y,
+            return radius > FP.distanceRectPoint(parent.x + _x,parent.y + _y,
                      other.parent.x - other.parent.originX, other.parent.y - other.parent.originY, 
-                     other.width, other.height);
+                     other.parent.width, other.parent.height);
 		}
 		
 		/** @private Collides against a Hitbox. */
 		private function collideHitbox(other:Hitbox):Boolean
 		{
-			return radius < FP.distanceRectPoint(parent.x + _x,parent.y + _y,
+			return radius > FP.distanceRectPoint(parent.x + _x,parent.y + _y,
                      other.parent.x + other._x, other.parent.y + other._y, other.width, other.height);
 		}
 
         /** @private Collides against a Circle. */
         private function collideCircle(other:Circle):Boolean
         {
-            var xDiff:Number = parent.x + _x - other.parent.x - other._x;
-            var xDiff:Number = parent.y + _y - other.parent.y - other._y;
-            var distSq:Number = xDiff*xDiff + yDiff*yDiff;
+            var xDiff:int = parent.x + _x - other.parent.x - other._x;
+            var yDiff:int = parent.y + _y - other.parent.y - other._y;
+            var distSq:int = xDiff*xDiff + yDiff*yDiff;
             return distSq < (radius + other.radius) * (radius + other.radius);
         }
 		
@@ -56,8 +56,7 @@
 		{
 			if (_x == value) return;
 			_x = value;
-			if (list) list.update();
-			else if (parent) update();
+			if (parent) update();
 		}
 		
 		/**
@@ -68,8 +67,7 @@
 		{
 			if (_y == value) return;
 			_y = value;
-			if (list) list.update();
-			else if (parent) update();
+			if (parent) update();
 		}
 		
 		/**
@@ -80,24 +78,18 @@
 		{
 			if (_radius == value) return;
 			_radius = value;
-			if (list) list.update();
-			else if (parent) update();
+            if (parent) update();
 		}
 		
 		
 		/** @private Updates the parent's bounds for this mask. */
 		override protected function update():void 
 		{
-			if (list)
-			{
-				// update parent list
-				list.update();
-			}
-			else if (parent)
+            if (parent)
 			{
 				// update entity bounds
-				parent.originX = -_x;
-				parent.originY = -_y;
+				parent.originX = -_x + _radius;
+				parent.originY = -_y + _radius;
 				parent.width = 2 * _radius;
 				parent.height = 2 * _radius;
 			}
