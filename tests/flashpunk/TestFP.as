@@ -4,6 +4,8 @@ package  tests.flashpunk
 	import net.flashpunk.Entity;
 	import org.flexunit.Assert;
 	import org.flexunit.assertThat;
+	import org.hamcrest.collection.array;
+	import org.hamcrest.collection.hasItem;
 	
 	import net.flashpunk.FP
 	
@@ -18,10 +20,41 @@ package  tests.flashpunk
 		[Test]
 		public function removeSucc():void
 		{
-			var array = [1, 2, 4, 6];
-			FP.remove(array, 4);
-			Assert.assertEquals(array, [1, 2, 6]);
+			var arr:Array = [1, 2, 4, 6];
+			FP.remove(arr, 4);
+			assertThat(array(arr, [1, 2, 6]));
 		}
+		
+		[Test]
+		public function removeFail():void
+		{
+			var arr:Array = [1, 2, 4, 6];
+			FP.remove(arr, 105);
+			assertThat(array(arr, [1, 2, 4, 6]));
+		}
+		
+		[Ignore("Want clarification on canonical behaviour")]
+		[Test]
+		public function removeDup():void
+		{
+			var arr:Array = [1, 2, 4, 4, 6];
+			FP.remove(arr, 4);
+			assertThat(array(arr, [1, 2, 6]));
+		}
+		
+		[Test]
+		public function choose():void
+		{
+			//make sure all values are from correct array
+			var arr:Array = [1, 2, 4, 6, 1009, -4];
+			var i:int = 20;
+			while (i)
+			{
+				assertThat(arr, hasItem(FP.choose(arr)));
+				i--;
+			}
+		}
+		
 		
 		[Test]
 		public function sign():void
@@ -105,6 +138,7 @@ package  tests.flashpunk
 			Assert.assertEquals(0xFF00FF00, FP.colorLerp(0xFF00FF00, 0xFF00FF00, 0.75));
 		}
 		
+		[Ignore("Want clarification on canonical behaviour")]
 		[Test]
 		public function colorLerpOutside():void
 		{
