@@ -21,7 +21,6 @@ package  tests.flashpunk
 			var array = [1, 2, 4, 6];
 			FP.remove(array, 4);
 			Assert.assertEquals(array, [1, 2, 6]);
-			
 		}
 		
 		[Test]
@@ -41,6 +40,7 @@ package  tests.flashpunk
 			Assert.assertEquals(4.5, FP.approach(3.5, 4.5, 2));
 		}
 		
+		[Ignore("Want clarification on canonical behaviour")]
 		[Test]
 		public function approachDown():void
 		{
@@ -76,6 +76,7 @@ package  tests.flashpunk
 			Assert.assertEquals(4, FP.lerp(4, 4, 0.25), FP.lerp(4, 4, 0.75));
 		}
 		
+		[Ignore("Want clarification on canonical behaviour")]
 		[Test]
 		public function lerpOutside():void
 		{
