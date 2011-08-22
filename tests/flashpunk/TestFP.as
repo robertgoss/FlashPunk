@@ -4,18 +4,30 @@ package  tests.flashpunk
 	import net.flashpunk.Entity;
 	import org.flexunit.Assert;
 	import org.flexunit.assertThat;
+	import org.flexunit.assumeThat;
 	import org.hamcrest.collection.array;
 	import org.hamcrest.collection.hasItem;
+	import org.hamcrest.number.closeTo;
+	import org.hamcrest.core.both;
+	import org.hamcrest.number.between;
+	import org.flexunit.experimental.theories.Theories;
 	
 	import net.flashpunk.FP
 	
+	[RunWith("org.flexunit.experimental.theories.Theories")]
 	public class TestFP 
 	{
+		private var theory:Theories;
+		
 		[Before]
 		public function init():void
 		{
 			FP.entity = new Entity();
 		}
+		
+		[DataPoints]
+		[ArrayElementType("Number")]
+		public  static var numValues:Array = [-23,-10,-1.56,0,0.1,1.4,1.5,3.1,3.2,50,65,230];
 		
 		[Test]
 		public function removeSucc():void
@@ -173,8 +185,97 @@ package  tests.flashpunk
 			Assert.assertEquals(-1, FP.entity.y);
 		}
 		
+		[Test]
+		public function anchorZero():void
+		{
+			FP.entity.x = 1; FP.entity.y = -3;
+			var anchor:Entity = new Entity();
+			anchor.x = 4; anchor.y = 5;
+			FP.anchorTo(FP.entity, anchor, 0);
+			Assert.assertEquals(4, FP.entity.x);
+			Assert.assertEquals(5, FP.entity.y);
+		}
 		
+		[Test]
+		public function anchorInside():void
+		{
+			FP.entity.x = 1; FP.entity.y = -3;
+			var anchor:Entity = new Entity();
+			anchor.x = 1; anchor.y = 5;
+			FP.anchorTo(FP.entity, anchor, 1);
+			Assert.assertEquals(1, FP.entity.x);
+			Assert.assertEquals(4, FP.entity.y);
+		}
 		
+		[Test]
+		public function anchorOutside():void
+		{
+			FP.entity.x = 1; FP.entity.y = -3;
+			var anchor:Entity = new Entity();
+			anchor.x = 4; anchor.y = 5;
+			FP.anchorTo(FP.entity, anchor, 100);
+			Assert.assertEquals(1, FP.entity.x);
+			Assert.assertEquals(-3, FP.entity.y);
+		}
+		
+		[Test]
+		public function angleTranslate():void
+		{
+			assertThat(FP.angle(0, 0, 3, 4), closeTo(FP.angle(1, -4.5, 4, -0.5),10e-6));
+		}
+		
+		[Test]
+		public function angleSimple():void
+		{
+			assertThat(FP.angle(0, 0,  1,  0), closeTo(0, 10e-6));
+			assertThat(FP.angle(0, 0,  1, -1), closeTo(45, 10e-6));
+			assertThat(FP.angle(0, 0,  0, -1), closeTo(90, 10e-6));
+			assertThat(FP.angle(0, 0, -1, -1), closeTo(135, 10e-6));
+			assertThat(FP.angle(0, 0, -1,  0), closeTo(180, 10e-6));
+			assertThat(FP.angle(0, 0, -1,  1), closeTo(225, 10e-6));
+			assertThat(FP.angle(0, 0,  0,  1), closeTo(270, 10e-6));
+			assertThat(FP.angle(0, 0,  1,  1), closeTo(315, 10e-6));
+		}
+		
+		[Test]
+		public function angleXYSimple():void
+		{
+			FP.angleXY(FP.entity, 0, 1, 0, 0);
+			assertThat(both(FP.entity.x, 1, FP.entity.y, 0));
+			FP.angleXY(FP.entity, 45, 1, 0, 0);
+			assertThat(both(FP.entity.x, 1, FP.entity.y, -1));
+			FP.angleXY(FP.entity, 90, 1, 0, 0);
+			assertThat(both(FP.entity.x, 0, FP.entity.y, -1));
+			FP.angleXY(FP.entity, 135, 1, 0, 0);
+			assertThat(both(FP.entity.x, -1, FP.entity.y, -1));
+			FP.angleXY(FP.entity, 180, 1, 0, 0);
+			assertThat(both(FP.entity.x, -1, FP.entity.y, 0));
+			FP.angleXY(FP.entity, 225, 1, 0, 0);
+			assertThat(both(FP.entity.x, -1, FP.entity.y, 1));
+			FP.angleXY(FP.entity, 270, 1, 0, 0);
+			assertThat(both(FP.entity.x, 0, FP.entity.y, 1));
+			FP.angleXY(FP.entity, 315, 1, 0, 0);
+			assertThat(both(FP.entity.x, 1, FP.entity.y, 1));
+		}
+		
+		[Theory]
+		public function angleXYReflexive(ang:Number):void
+		{
+			assumeThat(ang, between(0,360))
+			FP.angleXY(FP.entity, ang, 1, 0, 0)
+			assertThat(FP.angle(0, 0, FP.entity.x, FP.entity.y), closeTo(ang,10e-6));
+		}
+		
+		[Theory]
+		public function angleXYScale(ang:Number, len:Number):void
+		{
+			assumeThat(ang, between(0, 360))
+			var e:Entity = new Entity()
+			FP.angleXY(e, ang, len, 0, 0)
+			FP.angleXY(FP.entity, ang, 1, 0, 0)
+			assertThat(e.x, closeTo(FP.entity.x * len, 10e-6));
+			assertThat(e.y, closeTo(FP.entity.y * len, 10e-6));
+		}
 		
 		
 	}
