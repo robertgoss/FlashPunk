@@ -6,6 +6,10 @@
 
     Based of the flex4 CI Sample project.
  -->
+
+<!-- Required libraries -->
+<!-- The flexunit-as3.swc, flexunit-cilistener.swc, flexunit-uilistener.swc and  hamcrest.swc -->
+<!-- The flexunitTasks.jar -->
 <project name="FlashPunk" basedir="." default="test">
 	<!-- setup a prefix for all environment variables -->
 	<property environment="env" />
@@ -14,13 +18,14 @@
 	<property name="main.src.loc" location="${basedir}/" />
 	<property name="test.src.loc" location="${basedir}/tests" />
 	<property name="lib.loc" location="${basedir}/libs" />
-	<property name="output.loc" location="${basedir}/target" />
-	<property name="bin.loc" location="${output.loc}/bin" />
-	<property name="report.loc" location="${output.loc}/report" />
-	<property name="dist.loc" location="${output.loc}/dist" />
+	<property name="tmp.loc" location="${basedir}/tmp" />
+	<property name="bin.loc" location="${tmp.loc}/bin" />
+	<property name="report.loc" location="${basedir}/report" />
+	<property name="dist.loc" location="${tmp.loc}/dist" />
+    <property name="testdata.loc" location="${tmp.loc}/testdata" />
 
 	<!-- Setup Flex and FlexUnit ant tasks -->
-	<!-- You can set this directly so mxmlc will work correctly, or set FLEX_HOME as an environment variable and use as below -->
+	<!-- Set FLEX_HOME to base of flex directory -->
 	<property name="FLEX_HOME" location="${env.FLEX_HOME}" />
 	<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 	<taskdef resource="flexUnitTasks.tasks">
@@ -33,15 +38,17 @@
 
 	<target name="clean">
 		<!-- Remove all directories created during the build process -->
-		<delete dir="${output.loc}" />
+		<delete dir="${tmp.loc}" />
+        <delete dir="${report.loc}" />
 	</target>
 
 	<target name="init">
 		<!-- Create directories needed for the build process -->
-		<mkdir dir="${output.loc}" />
+		<mkdir dir="${tmp.loc}" />
 		<mkdir dir="${bin.loc}" />
 		<mkdir dir="${report.loc}" />
 		<mkdir dir="${dist.loc}" />
+        <mkdir dir="${testdata.loc}" />
 	</target>
 
 	<target name="test" depends="init">
@@ -58,7 +65,7 @@
         </mxmlc>
 	    <flexunit 
 		    workingDir="${bin.loc}"
-		    toDir="${report.loc}" 
+		    toDir="${testdata.loc}" 
 			haltonfailure="false" 
 			verbose="true" 
 			localTrusted="true">
@@ -71,11 +78,14 @@
 
 		<!-- Generate readable JUnit-style reports -->
 		<junitreport todir="${report.loc}">
-			<fileset dir="${report.loc}">
+			<fileset dir="${testdata.loc}">
 				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${report.loc}/html" />
+			<report format="frames" todir="${report.loc}" />
 	    </junitreport>
+
+        <!-- Remove temporary files -->
+        <delete dir="${tmp.loc}" />
 	</target>
 
 </project>
