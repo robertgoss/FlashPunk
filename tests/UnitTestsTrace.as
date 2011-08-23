@@ -5,20 +5,20 @@ package tests
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
 	
-	import tests.flashpunk.TestFP;
+	import tests.TestSuite;
 	
-	public class TestRunner extends Sprite
+	public class UnitTestsTrace extends Sprite
 	{
 		private var core:FlexUnitCore;
 		
 		
-		public function TestRunner()
+		public function UnitTestsTrace()
 		{
 			super();
 			
 			core = new FlexUnitCore();
 			core.addListener( new TraceListener() );
-			core.run( TestFP );
+			core.run( TestSuite );
 		}
 	}
 }
