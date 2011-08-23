@@ -51,8 +51,8 @@
         <mkdir dir="${testdata.loc}" />
 	</target>
 
-	<target name="test" depends="init">
-		<!-- Execute FlexUnit tests and publish reports -->
+    <target name="testbin">
+        <!-- Create the test binary -->
         <mxmlc 
             file="${test.src.loc}/TestRunner.mxml" 
             output="${bin.loc}/TestRunner.swf">
@@ -63,6 +63,10 @@
             <compiler.verbose-stacktraces>true</compiler.verbose-stacktraces>
             <compiler.headless-server>true</compiler.headless-server>
         </mxmlc>
+    </target>
+
+	<target name="test" depends="testbin">
+		<!-- Execute FlexUnit tests and publish reports -->
 	    <flexunit 
 		    workingDir="${bin.loc}"
 		    toDir="${testdata.loc}" 
