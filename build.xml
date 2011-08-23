@@ -51,7 +51,7 @@
         <mkdir dir="${testdata.loc}" />
 	</target>
 
-    <target name="testbin">
+    <target name="testbin" depends="init">
         <!-- Create the test binary -->
         <mxmlc 
             file="${test.src.loc}/TestRunner.mxml" 
@@ -76,6 +76,7 @@
 	      <source dir="${main.src.loc}" />
 	      <testSource dir="${main.src.loc}">
 	         <include name="**/Test*.as" />
+             <exclude name="**/TestSuite.as" />
 	      </testSource>
 	      <library dir="${lib.loc}" />
 	   </flexunit>
