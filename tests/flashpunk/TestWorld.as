@@ -4,27 +4,26 @@ package tests.flashpunk
 	import net.flashpunk.Entity;
 	import org.flexunit.Assert;
 	import org.flexunit.assertThat;
-	import org.flexunit.assumeThat;
 	import org.hamcrest.collection.array;
-	import org.hamcrest.collection.hasItem;
-	import org.hamcrest.number.closeTo;
-	import org.hamcrest.core.both;
-	import org.hamcrest.number.between;
 
-    import tests.matchers.entity.positionsEqual;
-    import tests.matchers.entity.positionsClose;
-    import tests.matchers.entity.closeToPosition;
-    import tests.matchers.entity.atPosition;
+    import tests.matchers.bitmap.bitmapSolid;
     
 	import net.flashpunk.FP;
     import net.flashpunk.Entity;
     import net.flashpunk.World;
     import net.flashpunk.Engine;
+    import net.flashpunk.graphics.Stamp;
 
     import tests.harness.CallbackEntity;
 
+    import flash.display.BitmapData;
+
     public class TestWorld
     {
+        public var redSq:Entity;
+        public var greenSq:Entity;
+        public var blueSq:Entity;
+
         [Before]
         public function init()
         {
@@ -32,6 +31,9 @@ package tests.flashpunk
             var engine:Engine = new Engine(100,100);
             FP.world = new World();
             engine.update();
+            redSq = new Entity(0,0,new Stamp(new BitmapData(100,100,true,0xFFFF0000)));
+            greenSq = new Entity(0,0,new Stamp(new BitmapData(100,100,true,0xFF00FF00)));
+            blueSq = new Entity(0,0,new Stamp(new BitmapData(100,100,true,0xFF0000FF)));
         }
 
         [Test]
@@ -255,6 +257,81 @@ package tests.flashpunk
             var ents:Array = [];
             FP.world.getAll(ents);
             assertThat(ents, array([]));
+        }
+
+        [Test]
+        public function bringToFront():void
+        {
+            FP.world.addList([redSq,blueSq,greenSq])
+            FP.engine.update();
+            FP.world.bringToFront(blueSq);
+            Assert.assertTrue(FP.world.isAtFront(blueSq));
+            FP.world.bringToFront(redSq);
+            Assert.assertTrue(FP.world.isAtFront(redSq));
+        }
+
+        [Test]
+        public function sendToBack():void
+        {
+            FP.world.addList([redSq,blueSq,greenSq])
+            FP.engine.update();
+            FP.world.sendToBack(blueSq);
+            Assert.assertTrue(FP.world.isAtBack(blueSq));
+            FP.world.sendToBack(redSq);
+            Assert.assertTrue(FP.world.isAtBack(redSq));
+        }
+
+        [Test]
+        public function bringForward():void
+        {
+            FP.world.addList([redSq,blueSq,greenSq])
+            FP.engine.update();
+            FP.world.sendToBack(blueSq);
+            FP.world.bringForward(blueSq);
+            Assert.assertFalse(FP.world.isAtFront(blueSq));
+            FP.world.bringForward(blueSq);
+            Assert.assertTrue(FP.world.isAtFront(blueSq));
+        }
+
+        [Test]
+        public function sendBackward():void
+        {
+            FP.world.addList([redSq,blueSq,greenSq])
+            FP.engine.update();
+            FP.world.bringToFront(blueSq);
+            FP.world.sendBackward(blueSq);
+            Assert.assertFalse(FP.world.isAtBack(blueSq));
+            FP.world.sendBackward(blueSq);
+            Assert.assertTrue(FP.world.isAtBack(blueSq));
+        }
+
+        [Test]
+        public function renderInLayerOrder():void
+        {
+            FP.world.addList([redSq,blueSq,greenSq])
+            FP.engine.update();
+            FP.world.bringToFront(redSq)
+            FP.world.render()
+            assertThat(FP.buffer, bitmapSolid(0xFFFF0000));
+            FP.world.bringToFront(blueSq)
+            FP.world.render()
+            assertThat(FP.buffer, bitmapSolid(0xFF0000FF));
+        }
+
+        [Test]
+        public function renderLayerOrder():void
+        {
+            redSq.layer = 2;
+            blueSq.layer = 1;
+            greenSq.layer = 0;
+            FP.world.addList([redSq,blueSq,greenSq])
+            FP.engine.update();
+            FP.world.bringToFront(redSq)
+            FP.world.render()
+            assertThat(FP.buffer, bitmapSolid(0xFF00FF00));
+            FP.world.bringToFront(blueSq)
+            FP.world.render()
+            assertThat(FP.buffer, bitmapSolid(0xFF00FF00));
         }
     }
 }
