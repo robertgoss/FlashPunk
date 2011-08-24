@@ -73,6 +73,7 @@ package tests.flashpunk
             FP.world.add(e);
             FP.engine.update();
             FP.world.remove(e);
+            FP.engine.update();
             var ents:Array = [];
             FP.world.getAll(ents);
             assertThat(ents, array([]))
@@ -126,6 +127,86 @@ package tests.flashpunk
             FP.world.add(e);
             FP.engine.update();
             Assert.assertFalse(e.renderCalled);
+        }
+
+        [Test]
+        public function removeAll():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.add(new Entity());
+            FP.engine.update();
+            FP.world.removeAll();
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array([]))
+        }
+
+        [Ignore("Want clarification on canonical behaviour")]
+        [Test]
+        public function addAndRemoveAll():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.add(new Entity());
+            FP.world.removeAll();
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array([]));
+        }
+
+        [Test]
+        public function addList():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++) eList.push(new Entity());
+            FP.world.addList(eList)
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
+        }
+
+        [Test]
+        public function addListEmpty():void
+        {
+            FP.world.addList([]);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array([]));
+        }
+
+        [Test]
+        public function removeList():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++) eList.push(new Entity());
+            FP.world.addList(eList);
+            var eList1:Array = [];
+            for(var i:int=0;i<10;i++) eList1.push(new Entity());
+            FP.world.addList(eList1);
+            FP.engine.update();
+            FP.world.removeList(eList1);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
+        }
+
+        [Ignore("Want clarification on canonical behaviour")]
+        [Test]
+        public function addAndRemoveList():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++) eList.push(new Entity());
+            FP.world.addList(eList);
+            var eList1:Array = [];
+            for(var i:int=0;i<10;i++) eList1.push(new Entity());
+            FP.world.addList(eList1);
+            FP.world.removeList(eList1);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
         }
     }
 }
