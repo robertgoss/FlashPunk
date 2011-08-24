@@ -208,5 +208,52 @@ package tests.flashpunk
             FP.world.getAll(ents);
             assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
         }
+
+        [Test]
+        public function createNew():void
+        {
+            FP.world.create(Entity,true);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            Assert.assertEquals(1,ents.length);
+        }
+
+        [Test]
+        public function createDontAdd():void
+        {
+            FP.world.create(Entity,false);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            Assert.assertEquals(0,ents.length);
+        }
+
+        [Test]
+        public function createRecycle():void
+        {
+            FP.entity = new Entity();
+            FP.world.add(FP.entity);
+            FP.engine.update();
+            FP.world.recycle(FP.entity);
+            FP.engine.update();
+            FP.world.create(Entity,true);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array([FP.entity]));
+        }
+
+        [Test]
+        public function recycle():void
+        {
+            FP.world.add(new Entity());
+            FP.engine.update();
+            FP.world.recycle();
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            assertThat(ents, array([]));
+        }
     }
 }
