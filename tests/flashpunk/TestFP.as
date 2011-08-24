@@ -11,13 +11,17 @@ package  tests.flashpunk
 	import org.hamcrest.core.both;
 	import org.hamcrest.number.between;
 	import org.flexunit.experimental.theories.Theories;
+
+    import tests.matchers.entity.positionsEqual;
+    import tests.matchers.entity.positionsClose;
+    import tests.matchers.entity.closeToPosition;
+    import tests.matchers.entity.atPosition;
+    
 	
-	import net.flashpunk.FP
+	import net.flashpunk.FP;
 	
-	[RunWith("org.flexunit.experimental.theories.Theories")]
 	public class TestFP 
 	{
-		private var theory:Theories;
 		
 		[Before]
 		public function init():void
@@ -169,8 +173,7 @@ package  tests.flashpunk
 		{
 			FP.entity.x = 1; FP.entity.y = -3;
 			FP.stepTowards(FP.entity, 4, 5, 0);
-			Assert.assertEquals(1, FP.entity.x);
-			Assert.assertEquals(-3, FP.entity.y);
+            assertThat(FP.entity, atPosition(1,-3)); 
 		}
 		
 		[Test]
@@ -178,8 +181,7 @@ package  tests.flashpunk
 		{
 			FP.entity.x = 1; FP.entity.y = -3;
 			FP.stepTowards(FP.entity, 4, 5, 20);
-			Assert.assertEquals(4, FP.entity.x);
-			Assert.assertEquals(5, FP.entity.y);
+            assertThat(FP.entity, atPosition(4,5));
 		}
 		
 		[Test]
@@ -187,8 +189,7 @@ package  tests.flashpunk
 		{
 			FP.entity.x = 1; FP.entity.y = -3;
 			FP.stepTowards(FP.entity, 1, 5, 2);
-			Assert.assertEquals(1, FP.entity.x);
-			Assert.assertEquals(-1, FP.entity.y);
+			assertThat(FP.entity, atPosition(1,-1));
 		}
 		
 		[Test]
@@ -198,8 +199,7 @@ package  tests.flashpunk
 			var anchor:Entity = new Entity();
 			anchor.x = 4; anchor.y = 5;
 			FP.anchorTo(FP.entity, anchor, 0);
-			Assert.assertEquals(4, FP.entity.x);
-			Assert.assertEquals(5, FP.entity.y);
+            assertThat(FP.entity, atPosition(4,5));
 		}
 		
 		[Test]
@@ -209,8 +209,7 @@ package  tests.flashpunk
 			var anchor:Entity = new Entity();
 			anchor.x = 1; anchor.y = 5;
 			FP.anchorTo(FP.entity, anchor, 1);
-			Assert.assertEquals(1, FP.entity.x);
-			Assert.assertEquals(4, FP.entity.y);
+            assertThat(FP.entity, atPosition(1,4));
 		}
 		
 		[Test]
@@ -220,8 +219,7 @@ package  tests.flashpunk
 			var anchor:Entity = new Entity();
 			anchor.x = 4; anchor.y = 5;
 			FP.anchorTo(FP.entity, anchor, 100);
-			Assert.assertEquals(1, FP.entity.x);
-			Assert.assertEquals(-3, FP.entity.y);
+			assertThat(FP.entity, atPosition(1,-3));
 		}
 		
 		[Test]
@@ -246,41 +244,51 @@ package  tests.flashpunk
 		[Test]
 		public function angleXYSimple():void
 		{
+            var s:Number = Math.sqrt(2);
+            var e:Number = 10e-6
 			FP.angleXY(FP.entity, 0, 1, 0, 0);
-			assertThat(both(FP.entity.x, 1, FP.entity.y, 0));
-			FP.angleXY(FP.entity, 45, 1, 0, 0);
-			assertThat(both(FP.entity.x, 1, FP.entity.y, -1));
+            assertThat(FP.entity, closeToPosition(1,0,e));
+			FP.angleXY(FP.entity, 45, s, 0, 0);
+            assertThat(FP.entity, closeToPosition(1,-1,e));
 			FP.angleXY(FP.entity, 90, 1, 0, 0);
-			assertThat(both(FP.entity.x, 0, FP.entity.y, -1));
-			FP.angleXY(FP.entity, 135, 1, 0, 0);
-			assertThat(both(FP.entity.x, -1, FP.entity.y, -1));
+            assertThat(FP.entity, closeToPosition(0,-1,e));
+			FP.angleXY(FP.entity, 135, s, 0, 0);
+            assertThat(FP.entity, closeToPosition(-1,-1,e));
 			FP.angleXY(FP.entity, 180, 1, 0, 0);
-			assertThat(both(FP.entity.x, -1, FP.entity.y, 0));
-			FP.angleXY(FP.entity, 225, 1, 0, 0);
-			assertThat(both(FP.entity.x, -1, FP.entity.y, 1));
+            assertThat(FP.entity, closeToPosition(-1,0,e));
+			FP.angleXY(FP.entity, 225, s, 0, 0);
+            assertThat(FP.entity, closeToPosition(-1,1,e));
 			FP.angleXY(FP.entity, 270, 1, 0, 0);
-			assertThat(both(FP.entity.x, 0, FP.entity.y, 1));
-			FP.angleXY(FP.entity, 315, 1, 0, 0);
-			assertThat(both(FP.entity.x, 1, FP.entity.y, 1));
+            assertThat(FP.entity, closeToPosition(0,1,e));
+			FP.angleXY(FP.entity, 315, s, 0, 0);
+            assertThat(FP.entity, closeToPosition(1,1,e));
+		}
+
+		[Test]
+		public function angleXYReflexive():void
+		{
+            for each(var ang:Number in numValues)
+            {
+			    assumeThat(ang, between(0,360))
+			    FP.angleXY(FP.entity, ang, 1, 0, 0)
+			    assertThat(FP.angle(0, 0, FP.entity.x, FP.entity.y), closeTo(ang,10e-6));
+            }
 		}
 		
-		[Theory]
-		public function angleXYReflexive(ang:Number):void
+		[Test]
+		public function angleXYScale():void
 		{
-			assumeThat(ang, between(0,360))
-			FP.angleXY(FP.entity, ang, 1, 0, 0)
-			assertThat(FP.angle(0, 0, FP.entity.x, FP.entity.y), closeTo(ang,10e-6));
-		}
-		
-		[Theory]
-		public function angleXYScale(ang:Number, len:Number):void
-		{
-			assumeThat(ang, between(0, 360))
-			var e:Entity = new Entity()
-			FP.angleXY(e, ang, len, 0, 0)
-			FP.angleXY(FP.entity, ang, 1, 0, 0)
-			assertThat(e.x, closeTo(FP.entity.x * len, 10e-6));
-			assertThat(e.y, closeTo(FP.entity.y * len, 10e-6));
+            for each(var ang:Number in numValues)
+            {
+                for each(var len:Number in numValues)
+                {
+			        assumeThat(ang, between(0, 360))
+			        var e:Entity = new Entity()
+			        FP.angleXY(e, ang, len, 0, 0)
+			        FP.angleXY(FP.entity, ang, 1, 0, 0)
+			        assertThat(FP.entity, positionsClose(e,10e-5))
+                }
+            }
 		}
 
         [Test]
@@ -289,8 +297,7 @@ package  tests.flashpunk
             var e:Entity = new Entity();
             e.x = 1;  e.y = -3;
             FP.rotateAround(e,FP.entity,0);
-            Assert.assertEquals(1,e.x);
-            Assert.assertEquals(-3,e.y);
+            assertThat(e, atPosition(1,-3))
         }
 
         [Test]
@@ -298,31 +305,35 @@ package  tests.flashpunk
         {
             FP.entity.x = 1;  FP.entity.y = -3;
             FP.rotateAround(FP.entity,FP.entity,234);
-            Assert.assertEquals(1,FP.entity.x);
-            Assert.assertEquals(-3,FP.entity.y);
+            assertThat(FP.entity, atPosition(1,-3))
         }
 
-        [Theory]
-        public function rotateAroundCenter(ang:Number):void
+        [Test]
+        public function rotateAroundCenter():void
         {
-            var e:Entity = new Entity();
-            FP.entity.x = 1;  FP.entity.y = 0;
-            var o:Entity = new Entity();
-            o.x = 0;  o.y = 0;
-            FP.angleXY(e,ang,1);
-            FP.rotateAround(FP.entity,o,ang);
-            Assert.assertEquals(e.x,FP.entity.x);
-            Assert.assertEquals(e.y,FP.entity.y);
+            for each(var ang:Number in numValues)
+            {
+                var e:Entity = new Entity();
+                FP.entity.x = 1;  FP.entity.y = 0;
+                var o:Entity = new Entity();
+                o.x = 0;  o.y = 0;
+                FP.angleXY(e,ang,1);
+                FP.rotateAround(FP.entity,o,ang);
+                assertThat(e, positionsEqual(FP.entity));
+            }
         }
 
-        [Theory]
-        public function rotateAroundDist(ang:Number):void
+        [Test]
+        public function rotateAroundDist():void
         {
-            var e:Entity = new Entity();
-            e.x = 1;  e.y = -3;
-            FP.entity.x = 1; FP.entity.y = -1;
-            FP.rotateAround(e,FP.entity,ang);
-            assertThat((e.x-1)*(e.x-1) + (e.y+1)*(e.y+1), closeTo(4,10e-5));
+            for each(var ang:Number in numValues)
+            {
+                var e:Entity = new Entity();
+                e.x = 1;  e.y = -3;
+                FP.entity.x = 1; FP.entity.y = -1;
+                FP.rotateAround(e,FP.entity,ang);
+                assertThat((e.x-1)*(e.x-1) + (e.y+1)*(e.y+1), closeTo(4,10e-5));
+            }
 		}
 
         [Test]
@@ -411,8 +422,7 @@ package  tests.flashpunk
         {
             FP.entity.x = 1; FP.entity.y = 1;
             FP.clampInRect(FP.entity,0,0,2,2);
-            Assert.assertEquals(1,FP.entity.x);
-            Assert.assertEquals(1,FP.entity.y);
+            assertThat(FP.entity, atPosition(1,1))
         }
 
         [Test]
@@ -420,8 +430,7 @@ package  tests.flashpunk
         {
             FP.entity.x = 4; FP.entity.y = 1;
             FP.clampInRect(FP.entity,0,0,2,2);
-            Assert.assertEquals(2,FP.entity.x);
-            Assert.assertEquals(1,FP.entity.y);
+            assertThat(FP.entity, atPosition(2,1))
         }
 
         [Test]
@@ -439,10 +448,14 @@ package  tests.flashpunk
             Assert.assertEquals(3,FP.scale(5,0,4,3,3));
         }
 
-        [Theory]
-        public function scaleClamp(n1:int,n2:int,n3:int,n4:int,n5:int):void
+        [Test]
+        public function scaleClamp():void
         {
-            Assert.assertEquals(FP.clamp(FP.scale(n1,n2,n3,n4,n5),n4,n5),FP.scaleClamp(n1,n2,n3,n4,n5));
+            var data:Array = [[1,2,4,6,4],[0,4,5,0,3],[-3,1,2,-1,2],[8,2,3,4,1]];
+            for each(var n:Array in data)
+            {
+                Assert.assertEquals(FP.clamp(FP.scale(n[0],n[1],n[2],n[3],n[4]),n[3],n[4]),FP.scaleClamp(n[0],n[1],n[2],n[3],n[4]));
+            }
         }
 
         
