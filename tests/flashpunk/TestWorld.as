@@ -247,9 +247,10 @@ package tests.flashpunk
         [Test]
         public function recycle():void
         {
-            FP.world.add(new Entity());
+            FP.entity = new Entity();
+            FP.world.add(FP.entity);
             FP.engine.update();
-            FP.world.recycle();
+            FP.world.recycle(FP.entity);
             FP.engine.update();
             var ents:Array = [];
             FP.world.getAll(ents);
