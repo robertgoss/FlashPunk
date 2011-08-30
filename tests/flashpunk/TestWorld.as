@@ -6,13 +6,16 @@ package tests.flashpunk
 	import org.flexunit.assertThat;
 	import org.hamcrest.collection.array;
 
+    import tests.matchers.entity.atPosition;
     import tests.matchers.bitmap.bitmapSolid;
     
 	import net.flashpunk.FP;
     import net.flashpunk.Entity;
     import net.flashpunk.World;
     import net.flashpunk.Engine;
+    import net.flashpunk.Graphic;
     import net.flashpunk.graphics.Stamp;
+    import net.flashpunk.Mask;
 
     import tests.harness.CallbackEntity;
 
@@ -332,6 +335,212 @@ package tests.flashpunk
             FP.world.bringToFront(blueSq)
             FP.world.render()
             assertThat(FP.buffer, bitmapSolid(0xFF00FF00));
+        }
+
+        [Test]
+        public function addGraphic():void
+        {
+            var g:Graphic = new Stamp(new BitmapData(100,100,true,0xFFFF0000));
+            FP.world.addGraphic(g,1,2,3);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            Assert.assertEquals(ents[0].layer,1);
+            assertThat(ents[0],atPosition(2,3));
+            Assert.assertEquals(ents[0].graphic,g);
+        }
+
+        [Test]
+        public function addMask():void
+        {
+            var mask:Mask = new Mask();
+            FP.world.addMask(mask,"A new type",2,3);
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getAll(ents);
+            Assert.assertEquals(ents[0].type,"A new type");
+            assertThat(ents[0],atPosition(2,3));
+            Assert.assertEquals(ents[0].mask,mask);
+        }
+
+        [Test]
+        public function countZero():void
+        {
+            Assert.assertEquals(FP.world.count,0)
+        }
+
+        [Test]
+        public function count():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++) eList.push(new Entity());
+            FP.world.addList(eList)
+            FP.engine.update();
+            Assert.assertEquals(FP.world.count,10);
+        }
+
+        [Test]
+        public function typeCountZero():void
+        {
+            Assert.assertEquals(FP.world.typeCount("A type"),0)
+        }
+
+        [Test]
+        public function typeCount():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.addMask(new Mask(),"Type 1");
+            FP.world.addMask(new Mask(),"Type 2");
+            FP.engine.update();
+            Assert.assertEquals(FP.world.typeCount("Type 1"),10);
+            Assert.assertEquals(FP.world.typeCount("Type 2"),1);
+            Assert.assertEquals(FP.world.typeCount("Type 3"),0);
+        }
+
+        [Test]
+        public function classCountZero():void
+        {
+            Assert.assertEquals(FP.world.classCount(Entity),0)
+        }
+
+        [Test]
+        public function classCount():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.add(new Entity());
+            FP.world.add(new CallbackEntity());
+            FP.engine.update();
+            Assert.assertEquals(FP.world.classCount(Entity),10);
+            Assert.assertEquals(FP.world.classCount(CallbackEntity),1);
+        }
+
+        [Test]
+        public function layerCountZero():void
+        {
+            Assert.assertEquals(FP.world.layerCount(1),0)
+        }
+
+        [Test]
+        public function layerCount():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.addGraphic(redSq.graphic,1);
+            FP.world.addGraphic(redSq.graphic,2);
+            FP.engine.update();
+            Assert.assertEquals(FP.world.layerCount(1),10);
+            Assert.assertEquals(FP.world.layerCount(2),1);
+            Assert.assertEquals(FP.world.layerCount(3),0);
+        }
+
+        [Test]
+        public function layers():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.addGraphic(redSq.graphic,1);
+            FP.world.addGraphic(redSq.graphic,10);
+            FP.engine.update();
+            Assert.assertEquals(FP.world.layers,2);
+        }
+
+        [Test]
+        public function layerFarthest():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.addGraphic(redSq.graphic,1);
+            FP.world.addGraphic(redSq.graphic,10);
+            FP.engine.update();
+            Assert.assertEquals(FP.world.layerFarthest,10);
+        }
+
+        [Test]
+        public function layerNearest():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.addGraphic(redSq.graphic,1);
+            FP.world.addGraphic(redSq.graphic,10);
+            FP.engine.update();
+            Assert.assertEquals(FP.world.layerNearest,1);
+        }
+
+        [Test]
+        public function uniqueTypes():void
+        {
+            for(var i:int=0;i<10;i++) FP.world.addMask(new Mask(),"Type 1");
+            FP.world.addMask(new Mask(),"Type 2");
+            FP.engine.update();
+            Assert.assertEquals(FP.world.uniqueTypes,2)
+        }
+
+        [Test]
+        public function getTypeZero():void
+        {
+            var ents:Array = [];
+            FP.world.getType("Type 1",ents);
+            assertThat(ents, array([]))
+        }
+
+        [Test]
+        public function getType():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++)
+            {
+                var e:Entity = new Entity();
+                e.type = "Type 1"
+                eList.push(e);
+            }
+            var e:Entity = new Entity();
+            e.type = "Type 2"
+            FP.world.add(e);
+            FP.world.addList(eList)
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getType("Type 1",ents);
+            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
+        }
+
+        [Test]
+        public function getClassZero():void
+        {
+            var ents:Array = [];
+            FP.world.getClass(Entity,ents);
+            assertThat(ents, array([]))
+        }
+
+        [Ignore("Want clarification on canonical behaviour")]
+        [Test]
+        public function getClass():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++) eList.push(new Entity());
+            FP.world.add(new CallbackEntity());
+            FP.world.addList(eList)
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getClass(Entity,ents);
+            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
+        }
+
+        [Test]
+        public function getLayerZero():void
+        {
+            var ents:Array = [];
+            FP.world.getLayer(1,ents);
+            assertThat(ents, array([]))
+        }
+
+        [Test]
+        public function getLayer():void
+        {
+            var eList:Array = [];
+            for(var i:int=0;i<10;i++)
+            {
+                var e:Entity = new Entity();
+                e.layer = 1
+                eList.push(e);
+            }
+            var e:Entity = new Entity();
+            e.layer = 10
+            FP.world.add(e);
+            FP.world.addList(eList)
+            FP.engine.update();
+            var ents:Array = [];
+            FP.world.getLayer(1,ents);
+            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
         }
     }
 }
