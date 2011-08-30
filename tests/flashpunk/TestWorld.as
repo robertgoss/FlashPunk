@@ -27,6 +27,8 @@ package tests.flashpunk
         public var greenSq:Entity;
         public var blueSq:Entity;
 
+        public var collEntities:Array;
+
         [Before]
         public function init()
         {
@@ -37,6 +39,14 @@ package tests.flashpunk
             redSq = new Entity(0,0,new Stamp(new BitmapData(100,100,true,0xFFFF0000)));
             greenSq = new Entity(0,0,new Stamp(new BitmapData(100,100,true,0xFF00FF00)));
             blueSq = new Entity(0,0,new Stamp(new BitmapData(100,100,true,0xFF0000FF)));
+
+            //TODO add more examples
+            collEntities = [];
+            for(var i:int=0;i<3;i++) collEntities.push(new Entity());
+            collEntities[0].x = 1; collEntities[0].y = 1;
+            collEntities[1].x = 0; collEntities[1].y = 0; collEntities[1].setHitbox(1,1);
+            collEntities[2].x = 0; collEntities[2].y = 0; collEntities[2].setHitbox(1,1,0.5,0.5);
+            
         }
 
         [Test]
@@ -540,7 +550,51 @@ package tests.flashpunk
             FP.engine.update();
             var ents:Array = [];
             FP.world.getLayer(1,ents);
-            assertThat(ents, array(eList.reverse()));//Reverse to get order correct.
+            Assert.assertEquals(10, eList.length);
+        }
+
+        [Test]
+        public function collideRectEmpty():void
+        {
+            Assert.assertEquals(null,FP.world.collideRect("A type",-1,-1,5,6));
+        }
+
+        [Test]
+        public function collideRect():void
+        {
+            FP.world.addList(collEntities)
+            FP.engine.update();
+            //Assert collide rect does collide
+            for(var i:int=-5;i<=5;i++)
+            {
+                for(var j:int=-5;j<=5;j++)
+                {
+                    var e:Entity = FP.world.collideRect("",1,1,1,1);
+                    if (e) Assert.assertTrue(e.collideRect(e.x,e.y,1,1,1,1));
+                }
+            }
+        }
+
+        [Test]
+        public function collidePointEmpty():void
+        {
+            Assert.assertEquals(null,FP.world.collidePoint("A type",0,0));
+        }
+
+        [Test]
+        public function collidePoint():void
+        {
+            FP.world.addList(collEntities)
+            FP.engine.update();
+            //Assert collide point does collide
+            for(var i:int=-5;i<=5;i++)
+            {
+                for(var j:int=-5;j<=5;j++)
+                {
+                    var e:Entity = FP.world.collidePoint("",1,1);
+                    if (e) Assert.assertTrue(e.collidePoint(e.x,e.y,1,1));
+                }
+            }
         }
     }
 }
