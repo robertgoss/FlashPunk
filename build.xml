@@ -16,10 +16,11 @@
 	
 	<!-- Setup paths for build -->
 	<property name="main.src.loc" location="${basedir}/" />
-	<property name="test.src.loc" location="${basedir}/tests" />
-	<property name="lib.loc" location="${basedir}/tests/libs" />
-	<property name="tmp.loc" location="${basedir}/tmp" />
-	<property name="bin.loc" location="${tmp.loc}/bin" />
+	<property name="testdir" location="${basedir}/tests/" />
+    <property name="test.src.loc" location="${testdir}" />
+	<property name="lib.loc" location="${testdir}/libs" />
+	<property name="tmp.loc" location="${testdir}/tmp" />
+	<property name="bin.loc" location="${testdir}/bin" />
 	<property name="report.loc" location="${basedir}/report" />
 	<property name="dist.loc" location="${tmp.loc}/dist" />
     <property name="testdata.loc" location="${tmp.loc}/testdata" />
@@ -92,5 +93,21 @@
         <!-- Remove temporary files -->
         <delete dir="${tmp.loc}" />
 	</target>
+
+    <target name="compile" depends="init">
+        <fileset id="sources" dir="net">
+            <include name="**/*.as"/>
+        </fileset>
+        <pathconvert property="classes" pathsep=" " refid="sources">
+            <chainedmapper>
+                <globmapper from="${basedir}/*" to="*"/>
+                <mapper type="package" from="*.as" to="*"/>
+            </chainedmapper>
+        </pathconvert>
+        <echo message="classes is set to = ${classes}"/>
+        <compc output="${basedir}/FlashPunk.swc" include-classes="${classes}">
+            <source-path path-element="${basedir}"/>
+        </compc>
+    </target>
 
 </project>
