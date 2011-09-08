@@ -13,7 +13,6 @@ package net.flashpunk.debug
 	import flash.system.System;
 	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
-	import net.flashpunk.utils.Draw;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
 	import net.flashpunk.graphics.Text;

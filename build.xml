@@ -20,6 +20,7 @@
     <property name="test.src.loc" location="${testdir}" />
 	<property name="lib.loc" location="${testdir}/libs" />
 	<property name="tmp.loc" location="${testdir}/tmp" />
+    <property name="doc.loc" location="${basedir}/doc" />
 	<property name="bin.loc" location="${testdir}/bin" />
 	<property name="report.loc" location="${basedir}/report" />
 	<property name="dist.loc" location="${tmp.loc}/dist" />
@@ -40,12 +41,14 @@
 	<target name="clean">
 		<!-- Remove all directories created during the build process -->
 		<delete dir="${tmp.loc}" />
+        <delete dir="${doc.loc}" />
         <delete dir="${report.loc}" />
 	</target>
 
 	<target name="init">
 		<!-- Create directories needed for the build process -->
 		<mkdir dir="${tmp.loc}" />
+        <mkdir dir="${doc.loc}" />
 		<mkdir dir="${bin.loc}" />
 		<mkdir dir="${report.loc}" />
 		<mkdir dir="${dist.loc}" />
@@ -108,6 +111,14 @@
         <compc output="${basedir}/FlashPunk.swc" include-classes="${classes}">
             <source-path path-element="${basedir}"/>
         </compc>
+    </target>
+
+    <target name="doc" depends="init">
+        <exec executable="asdoc">
+            <arg line="-doc-sources net" />
+            <arg line="-main-title FlashPunk" />
+            <arg line="-output doc" />
+        </exec>
     </target>
 
 </project>
