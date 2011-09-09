@@ -28,8 +28,7 @@
 
 	<!-- Setup Flex and FlexUnit ant tasks -->
 	<!-- Set FLEX_HOME to base of flex directory -->
-	<property name="FLEX_HOME" location="${env.FLEX_HOME}" />
-	
+		
         <taskdef resource="flexTasks.tasks">
            <classpath>
               <fileset dir="${lib.loc}">
