@@ -97,8 +97,6 @@ classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 			<report format="frames" todir="${report.loc}" />
 	    </junitreport>
 
-        <!-- Remove temporary files -->
-        <delete dir="${tmp.loc}" />
 	</target>
 
     <target name="compile" depends="init">
