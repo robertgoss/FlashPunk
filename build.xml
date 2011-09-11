@@ -29,13 +29,9 @@
 	<!-- Setup Flex and FlexUnit ant tasks -->
 	<!-- Set FLEX_HOME to base of flex directory -->
 		
-        <taskdef resource="flexTasks.tasks">
-           <classpath>
-              <fileset dir="${lib.loc}">
-                 <include name="flexTasks*.jar" />
-              </fileset>
-           </classpath>
-        </taskdef>
+        <property name="FLEX_HOME" location="${env.FLEX_HOME}" />
+        <taskdef resource="flexTasks.tasks" 
+classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 	
         <taskdef resource="flexUnitTasks.tasks">
 	   <classpath>
