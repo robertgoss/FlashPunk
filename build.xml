@@ -30,6 +30,7 @@
 	<!-- Set FLEX_HOME to base of flex directory -->
 		
         <property name="FLEX_HOME" location="${env.FLEX_HOME}" />
+        <property name="asdoc.loc" location="${FLEX_HOME}/bin/asdoc" />
         <taskdef resource="flexTasks.tasks" 
 classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 	
@@ -117,7 +118,7 @@ classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
     </target>
 
     <target name="doc" depends="init">
-        <exec executable="asdoc">
+        <exec executable="${asdoc.loc}">
             <arg line="-doc-sources net" />
             <arg line="-main-title FlashPunk" />
             <arg line="-output doc" />
