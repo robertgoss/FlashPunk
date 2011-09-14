@@ -17,7 +17,7 @@ package tests.flashpunk
     import net.flashpunk.graphics.Stamp;
     import net.flashpunk.masks.Hitbox;
 
-    import tests.harness.CallbackEntity;
+    import tests.harness.CallbackMask;
 
     import flash.display.BitmapData;
 
@@ -144,7 +144,41 @@ package tests.flashpunk
             Assert.assertEquals(1,e.originY)
         }
 
-        
+        [Test]
+        public function collideRectMaskCallback():void
+        {
+            FP.entity = new Entity(0,0,null,new CallbackMask())
+            FP.entity.setHitbox(10,10)
+            FP.collideRect(0,0,-1,-1,3,3)
+            Assert.assertEquals(true,(FP.mask as CallbackMask).collideCalled)
+        }
+
+        [Test]
+        public function collideRectMaskNotCallback():void
+        {
+            FP.entity = new Entity(0,0,null,new CallbackMask())
+            FP.entity.setHitbox(10,10)
+            FP.collideRect(0,0,-10,-10,3,3)
+            Assert.assertEquals(false,(FP.mask as CallbackMask).collideCalled)
+        }
+
+        [Test]
+        public function collidePointMaskCallback():void
+        {
+            FP.entity = new Entity(0,0,null,new CallbackMask())
+            FP.entity.setHitbox(10,10)
+            FP.collidePoint(0,0,1,1)
+            Assert.assertEquals(true,(FP.mask as CallbackMask).collideCalled)
+        }
+
+        [Test]
+        public function collidePointMaskNotCallback():void
+        {
+            FP.entity = new Entity(0,0,null,new CallbackMask())
+            FP.entity.setHitbox(10,10)
+            FP.collidePoint(0,0,-1,-1)
+            Assert.assertEquals(false,(FP.mask as CallbackMask).collideCalled)
+        }
             
     }
 }
