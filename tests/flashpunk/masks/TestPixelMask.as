@@ -9,6 +9,7 @@ package  tests.flashpunk.masks
 	import net.flashpunk.masks.Pixelmask;
 	
 	import tests.matchers.masks.collides;
+	import tests.matchers.masks.notCollides;
 	
 	import org.flexunit.assertThat;
 	
@@ -61,15 +62,17 @@ package  tests.flashpunk.masks
 		public function makePixelmask(x:int, y:int, data:Array, originX:int,originY:int):Mask
 		{
 			var entity:Entity = new Entity(x, y, null, new Mask());
-			var bmd:BitmapData = new BitmapData(10, 10, true, 0);
-			for each(var shape:Array in data)
+			var width:int = (data[0] as Array).length
+			var height:int = data.length
+			var bmd:BitmapData = new BitmapData(width, height, true, 0);
+			for (var i:int = 0; i < width; i++)
 			{
-				if (shape.length == 4)
+				for (var j:int = 0; j < height; j++)
 				{
-					bmd.fillRect(new Rectangle(shape[0], shape[1], shape[2], shape[3]), 1)
-				}else
-				{
-					bmd.setPixel32(shape[0], shape[1], 1);
+					if (data[j][i] == 1)
+					{
+						bmd.setPixel32(i,j,0xFFFFFFFF);
+					}
 				}
 			}
 			entity.mask = new Pixelmask(bmd, -originX, -originY);
@@ -80,16 +83,31 @@ package  tests.flashpunk.masks
 		public function setupPixelmasks():void
 		{
 			_pixels = new Array()
-			_pixels.push(makePixelmask(0, 0, [[9, 9], [0, 0, 5, 5]], 0, 0))
-			_pixels.push(makePixelmask(0, 0, [[5, 0, 1, 5], [0, 5, 5, 1]], 0, 0))
-			_pixels.push(makePixelmask(1, 1, [[0, 0, 2, 2]], 1, 1))
-			_pixels.push(makePixelmask(0, 0, [[9, 8], [8, 9], [8, 8]], 0, 0))
+			_pixels = new Array();
+			_pixels.push(makePixelmask(0, 0, [[1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+											  [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+											  [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+											  [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+											  [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+								 			  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+											  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+											  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+											  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+											  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]],0,0))
+			_pixels.push(makePixelmask(0, 0, [[0, 0, 0, 0, 0, 1],
+											  [0, 0, 0, 0, 0, 1],
+											  [0, 0, 0, 0, 0, 1], 
+											  [0, 0, 0, 0, 0, 1],
+											  [0, 0, 0, 0, 0, 1],
+											  [1, 1, 1, 1, 1, 1]], 0, 0))
+			_pixels.push(makePixelmask(0, 0, [[1, 1], [1, 1]], 0, 0))
+			_pixels.push(makePixelmask(8, 8, [[1, 1], [1, 0]], 0, 0))
 			for (var i in _pixels)
 			{
 				_pixels[i].parent.name = i;
 			}
-			_pixel_pixel = [[1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-			_pixel_grid = [[1, 0, 1, 0, 1], [0, 1, 0, 0, 1], [0, 0, 1, 0, 1], [0, 0, 0, 1, 1]]
+			_pixel_pixel = [[1, 0, 1, 0], [0, 1, 0, 0], [1, 0, 1, 0], [0, 0, 0, 1]]
+			_pixel_grid = [[1, 0, 1, 0, 1], [0, 1, 0, 0, 1], [1, 0, 1, 0, 1], [0, 0, 0, 1, 0]]
 			_pixel_mask = [[1, 0], [1, 1], [0, 0], [1, 0]]
 			_pixel_hitbox = [[1, 0], [1, 1], [0, 0], [1, 0]]
 		}
@@ -153,7 +171,6 @@ package  tests.flashpunk.masks
 			
 		}
 		
-		[Ignore("Want clarification on canonical behaviour")]
 		[Test]
 		public function collisionsPixelmaskHitbox():void
 		{
@@ -178,13 +195,12 @@ package  tests.flashpunk.masks
 				{
 					if (_pixel_hitbox[i][j] == 0)
 					{
-						assertThat(_pixels[i] as Pixelmask, not(collides(_hitboxes[j] as Mask)));
+						assertThat(_pixels[i] as Pixelmask, notCollides(_hitboxes[j] as Mask));
 					}
 				}
 			}
 		}
 		
-		[Ignore("Want clarification on canonical behaviour")]
 		[Test]
 		public function collisionsPixelmaskMask():void
 		{
@@ -209,13 +225,12 @@ package  tests.flashpunk.masks
 				{
 					if (_pixel_mask[i][j] == 0)
 					{
-						assertThat(_pixels[i] as Pixelmask, not(collides(_masks[j] as Mask)));
+						assertThat(_pixels[i] as Pixelmask, notCollides(_masks[j] as Mask));
 					}
 				}
 			}
 		}
 		
-		[Ignore("Want clarification on canonical behaviour")]
 		[Test]
 		public function collisionsPixelmaskGrid():void
 		{
@@ -240,7 +255,7 @@ package  tests.flashpunk.masks
 				{
 					if (_pixel_grid[i][j] == 0)
 					{
-						assertThat(_pixels[i] as Pixelmask, not(collides(_grids[j] as Mask)));
+						assertThat(_pixels[i] as Pixelmask, notCollides(_grids[j] as Mask));
 					}
 				}
 			}
@@ -269,7 +284,7 @@ package  tests.flashpunk.masks
 				{
 					if (_pixel_pixel[i][j] == 0)
 					{
-						assertThat(_pixels[i] as Pixelmask, not(collides(_pixels[j] as Mask)));
+						assertThat(_pixels[i] as Pixelmask, notCollides(_pixels[j] as Mask));
 					}
 				}
 			}
