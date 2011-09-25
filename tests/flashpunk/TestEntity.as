@@ -119,7 +119,6 @@ package tests.flashpunk
             Assert.assertEquals(10,redSq.height)
         }
 
-		[Ignore("Want clarification on canonical behaviour")]
         [Test]
         public function setHitboxToOriginXY():void
         {
@@ -132,7 +131,6 @@ package tests.flashpunk
             Assert.assertEquals(1,e.originY)
         }
 		
-		[Ignore("Want clarification on canonical behaviour")]
         [Test]
         public function setHitboxToXY():void
         {
