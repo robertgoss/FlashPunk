@@ -42,7 +42,7 @@ package  tests.flashpunk.masks
 			_hitboxes.push(makeHitbox(15, 5, 1, 1, 0, 0))
 			_hitboxes.push(makeHitbox(23, -3, 5, 5, 3, -3))
 			_hitboxes.push(makeHitbox(8, 11, 4, 3, 0, 3))
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
 				_hitboxes[i].parent.name = i;
 			}
@@ -70,7 +70,7 @@ package  tests.flashpunk.masks
 			_masks.push(makeMask(15, 5, 1, 1, 0, 0))
 			_masks.push(makeMask(23, -3, 5, 5, 3, -3))
 			_masks.push(makeMask(8, 11, 4, 3, 0, 3))
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
 				_masks[i].parent.name = i;
 			}
@@ -80,9 +80,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsHitboxHitbox():void
 		{
-			for (var i in _hitboxes)
+			for (var i:String in _hitboxes)
 			{
-				for (var j in _hitboxes)
+				for (var j:String in _hitboxes)
 				{
 					if (_hitbox_hitbox[i][j] == 1)
 					{
@@ -95,9 +95,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsHitboxHitbox():void
 		{
-			for (var i in _hitboxes)
+			for (var i:String in _hitboxes)
 			{
-				for (var j in _hitboxes)
+				for (var j:String in _hitboxes)
 				{
 					if (_hitbox_hitbox[i][j] == 0)
 					{
@@ -110,9 +110,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsHitboxMask():void
 		{
-			for (var i in _hitboxes)
+			for (var i:String in _hitboxes)
 			{
-				for (var j in _masks)
+				for (var j:String in _masks)
 				{
 					if (_hitbox_mask[i][j] == 1)
 					{
@@ -125,9 +125,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsHitboxMask():void
 		{
-			for (var i in _hitboxes)
+			for (var i:String in _hitboxes)
 			{
-				for(var j in _masks)
+				for(var j:String in _masks)
 				{
 					if (_hitbox_mask[i][j] == 0)
 					{

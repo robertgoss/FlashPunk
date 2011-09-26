@@ -197,7 +197,7 @@ package tests.flashpunk
             for(var i:int=0;i<10;i++) eList.push(new Entity());
             FP.world.addList(eList);
             var eList1:Array = [];
-            for(var i:int=0;i<10;i++) eList1.push(new Entity());
+            for(i=0;i<10;i++) eList1.push(new Entity());
             FP.world.addList(eList1);
             FP.engine.update();
             FP.world.removeList(eList1);
@@ -215,7 +215,7 @@ package tests.flashpunk
             for(var i:int=0;i<10;i++) eList.push(new Entity());
             FP.world.addList(eList);
             var eList1:Array = [];
-            for(var i:int=0;i<10;i++) eList1.push(new Entity());
+            for(i=0;i<10;i++) eList1.push(new Entity());
             FP.world.addList(eList1);
             FP.world.removeList(eList1);
             FP.engine.update();
@@ -487,13 +487,14 @@ package tests.flashpunk
         public function getType():void
         {
             var eList:Array = [];
+            var e:Entity;
             for(var i:int=0;i<10;i++)
             {
-                var e:Entity = new Entity();
+                e = new Entity();
                 e.type = "Type 1"
                 eList.push(e);
             }
-            var e:Entity = new Entity();
+            e = new Entity();
             e.type = "Type 2"
             FP.world.add(e);
             FP.world.addList(eList)

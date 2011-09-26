@@ -102,7 +102,7 @@ package  tests.flashpunk.masks
 											  [1, 1, 1, 1, 1, 1]], 0, 0))
 			_pixels.push(makePixelmask(0, 0, [[1, 1], [1, 1]], 0, 0))
 			_pixels.push(makePixelmask(8, 8, [[1, 1], [1, 0]], 0, 0))
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
 				_pixels[i].parent.name = i;
 			}
@@ -139,7 +139,7 @@ package  tests.flashpunk.masks
 											  [0, 0, 0, 0, 0], 
 											  [0, 0, 0, 0, 0],
 											  [0, 0, 0, 1, 0]], 0, 0))
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
 				_grids[i].parent.name = i;
 			}
@@ -151,7 +151,7 @@ package  tests.flashpunk.masks
 			_hitboxes = new Array();
 			_hitboxes.push(makeHitbox(4, 4, 5, 5, 0, 0))
 			_hitboxes.push(makeHitbox(5, 0, 1, 1, 0, 0))
-			for (var i in _hitboxes)
+			for (var i:String in _hitboxes)
 			{
 				_hitboxes[i].parent.name = i;
 			}
@@ -164,7 +164,7 @@ package  tests.flashpunk.masks
 			_masks = new Array();
 			_masks.push(makeMask(6, 7, 5, 5, 2, 3))
 			_masks.push(makeMask(5, 0, 1, 1, 0, 0))
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
 				_masks[i].parent.name = i;
 			}
@@ -174,9 +174,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsPixelmaskHitbox():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _hitboxes)
+				for (var j:String in _hitboxes)
 				{
 					if (_pixel_hitbox[i][j] == 1)
 					{
@@ -189,9 +189,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsPixelmaskHitbox():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _hitboxes)
+				for (var j:String in _hitboxes)
 				{
 					if (_pixel_hitbox[i][j] == 0)
 					{
@@ -204,9 +204,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsPixelmaskMask():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _masks)
+				for (var j:String in _masks)
 				{
 					if (_pixel_mask[i][j] == 1)
 					{
@@ -219,9 +219,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsPixelmaskMask():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _masks)
+				for (var j:String in _masks)
 				{
 					if (_pixel_mask[i][j] == 0)
 					{
@@ -234,9 +234,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsPixelmaskGrid():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _grids)
+				for (var j:String in _grids)
 				{
 					if (_pixel_grid[i][j] == 1)
 					{
@@ -249,9 +249,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsPixelmaskGrid():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _grids)
+				for (var j:String in _grids)
 				{
 					if (_pixel_grid[i][j] == 0)
 					{
@@ -263,9 +263,9 @@ package  tests.flashpunk.masks
 		
 		public function collisionsPixelmaskPixelmask():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _pixels)
+				for (var j:String in _pixels)
 				{
 					if (_pixel_pixel[i][j] == 1)
 					{
@@ -278,9 +278,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsPixelmaskPixelmask():void
 		{
-			for (var i in _pixels)
+			for (var i:String in _pixels)
 			{
-				for (var j in _pixels)
+				for (var j:String in _pixels)
 				{
 					if (_pixel_pixel[i][j] == 0)
 					{

@@ -33,7 +33,7 @@ package  tests.flashpunk
 			_masks.push(makeMask(15, 5, 1, 1, 0, 0))
 			_masks.push(makeMask(23, -3, 5, 5, 3, -3))
 			_masks.push(makeMask(8, 11, 4, 3, 0, 3))
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
 				_masks[i].parent.name = i;
 			}
@@ -44,9 +44,9 @@ package  tests.flashpunk
 		[Test]
 		public function collisionsMaskMask():void
 		{
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
-				for (var j in _masks)
+				for (var j:String in _masks)
 				{
 					if (_mask_mask[i][j] == 1)
 					{
@@ -59,9 +59,9 @@ package  tests.flashpunk
 		[Test]
 		public function noCollisionsMaskMask():void
 		{
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
-				for(var j in _masks)
+				for(var j:String in _masks)
 				{
 					if (_mask_mask[i][j] == 0)
 					{

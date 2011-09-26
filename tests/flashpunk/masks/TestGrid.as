@@ -62,7 +62,7 @@ package  tests.flashpunk.masks
 			_grids.push(makeGrid(3, 3, 2, 2, [[1, 0, 0], [0, 0, 0], [0, 0, 1]], 2, 2))
 			_grids.push(makeGrid(0, 0, 2, 2, [[0, 0, 1]], 0, 0))
 			_grids.push(makeGrid(0, 0, 2, 2, [[0, 1]], 0, -1));
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
 				_grids[i].parent.name = i;
 			}
@@ -81,7 +81,7 @@ package  tests.flashpunk.masks
 			_hitboxes.push(makeHitbox(1, 1, 2, 2, 0, 0))
 			_hitboxes.push(makeHitbox(5, 1, 2, 2, 1, 1))
 			_hitboxes.push(makeHitbox(3, 2, 2, 2, 1, 1))
-			for (var i in _hitboxes)
+			for (var i:String in _hitboxes)
 			{
 				_hitboxes[i].parent.name = i;
 			}
@@ -96,7 +96,7 @@ package  tests.flashpunk.masks
 			_masks.push(makeMask(1, 1, 2, 2, 0, 0))
 			_masks.push(makeMask(5, 1, 2, 2, 1, 1))
 			_masks.push(makeMask(3, 2, 2, 2, 1, 1))
-			for (var i in _masks)
+			for (var i:String in _masks)
 			{
 				_masks[i].parent.name = i;
 			}
@@ -106,9 +106,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsGridHitbox():void
 		{
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
-				for (var j in _hitboxes)
+				for (var j:String in _hitboxes)
 				{
 					if (_grid_hitbox[i][j] == 1)
 					{
@@ -121,9 +121,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsGridHitbox():void
 		{
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
-				for (var j in _hitboxes)
+				for (var j:String in _hitboxes)
 				{
 					if (_grid_hitbox[i][j] == 0)
 					{
@@ -136,9 +136,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsGridMask():void
 		{
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
-				for (var j in _masks)
+				for (var j:String in _masks)
 				{
 					if (_grid_mask[i][j] == 1)
 					{
@@ -151,9 +151,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsGridMask():void
 		{
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
-				for (var j in _masks)
+				for (var j:String in _masks)
 				{
 					if (_grid_mask[i][j] == 0)
 					{
@@ -166,9 +166,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function collisionsGridGrid():void
 		{
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
-				for (var j in _grids)
+				for (var j:String in _grids)
 				{
 					if (_grid_grid[i][j] == 1)
 					{
@@ -181,9 +181,9 @@ package  tests.flashpunk.masks
 		[Test]
 		public function noCollisionsGridGrid():void
 		{
-			for (var i in _grids)
+			for (var i:String in _grids)
 			{
-				for (var j in _grids)
+				for (var j:String in _grids)
 				{
 					if (_grid_grid[i][j] == 0)
 					{
