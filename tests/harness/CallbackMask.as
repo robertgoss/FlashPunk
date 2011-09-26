@@ -9,6 +9,7 @@ package tests.harness
         override public function collide(mask:Mask):Boolean
         {
             collideCalled = true
+            return true; //Have to return something.
         }
     }
 }

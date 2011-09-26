@@ -148,8 +148,8 @@ package tests.flashpunk
         {
             FP.entity = new Entity(0,0,null,new CallbackMask())
             FP.entity.setHitbox(10,10)
-            FP.collideRect(0,0,-1,-1,3,3)
-            Assert.assertEquals(true,(FP.mask as CallbackMask).collideCalled)
+            FP.entity.collideRect(0,0,-1,-1,3,3)
+            Assert.assertEquals(true,(FP.entity.mask as CallbackMask).collideCalled)
         }
 
         [Test]
@@ -157,8 +157,8 @@ package tests.flashpunk
         {
             FP.entity = new Entity(0,0,null,new CallbackMask())
             FP.entity.setHitbox(10,10)
-            FP.collideRect(0,0,-10,-10,3,3)
-            Assert.assertEquals(false,(FP.mask as CallbackMask).collideCalled)
+            FP.entity.collideRect(0,0,-10,-10,3,3)
+            Assert.assertEquals(false,(FP.entity.mask as CallbackMask).collideCalled)
         }
 
         [Test]
@@ -166,8 +166,8 @@ package tests.flashpunk
         {
             FP.entity = new Entity(0,0,null,new CallbackMask())
             FP.entity.setHitbox(10,10)
-            FP.collidePoint(0,0,1,1)
-            Assert.assertEquals(true,(FP.mask as CallbackMask).collideCalled)
+            FP.entity.collidePoint(0,0,1,1)
+            Assert.assertEquals(true,(FP.entity.mask as CallbackMask).collideCalled)
         }
 
         [Test]
@@ -175,8 +175,8 @@ package tests.flashpunk
         {
             FP.entity = new Entity(0,0,null,new CallbackMask())
             FP.entity.setHitbox(10,10)
-            FP.collidePoint(0,0,-1,-1)
-            Assert.assertEquals(false,(FP.mask as CallbackMask).collideCalled)
+            FP.entity.collidePoint(0,0,-1,-1)
+            Assert.assertEquals(false,(FP.entity.mask as CallbackMask).collideCalled)
         }
             
     }
