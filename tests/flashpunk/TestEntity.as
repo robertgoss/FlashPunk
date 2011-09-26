@@ -130,8 +130,7 @@ package tests.flashpunk
             Assert.assertEquals(1,e.originX)
             Assert.assertEquals(1,e.originY)
         }
-
-        [Ignore("Want clarification on canonical behaviour")]
+		
         [Test]
         public function setHitboxToXY():void
         {
